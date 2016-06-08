@@ -33,7 +33,8 @@ def upgrade():
     with op.batch_alter_table("task_instance") as batch_op:
         batch_op.alter_column('execution_date',
                               existing_type=DateTime,
-                              type_=DATETIME(fsp=6))
+                              type_=DATETIME(fsp=6),
+                              existing_nullable=True)
         batch_op.alter_column('start_date',
                               existing_type=DateTime,
                               type_=DATETIME(fsp=6))
