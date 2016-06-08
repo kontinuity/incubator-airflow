@@ -49,7 +49,7 @@ from sqlalchemy import (
     Index, Float)
 from sqlalchemy import case, func, or_, and_
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
-from sqlalchemy.dialects.mysql import LONGTEXT
+from sqlalchemy.dialects.mysql import LONGTEXT, DATETIME
 from sqlalchemy.orm import relationship, synonym
 
 from croniter import croniter
@@ -688,9 +688,9 @@ class TaskInstance(Base):
 
     task_id = Column(String(ID_LEN), primary_key=True)
     dag_id = Column(String(ID_LEN), primary_key=True)
-    execution_date = Column(DateTime, primary_key=True)
-    start_date = Column(DateTime)
-    end_date = Column(DateTime)
+    execution_date = Column(DATETIME(fsp=6), primary_key=True)
+    start_date = Column(DATETIME(fsp=6))
+    end_date = Column(DATETIME(fsp=6))
     duration = Column(Float)
     state = Column(String(20))
     try_number = Column(Integer, default=0)
@@ -3299,9 +3299,9 @@ class DagRun(Base):
 
     id = Column(Integer, primary_key=True)
     dag_id = Column(String(ID_LEN))
-    execution_date = Column(DateTime, default=func.now())
-    start_date = Column(DateTime, default=func.now())
-    end_date = Column(DateTime)
+    execution_date = Column(DATETIME(fsp=6), default=datetime.now())
+    start_date = Column(DATETIME(fsp=6), default=datetime.now())
+    end_date = Column(DATETIME(fsp=6))
     state = Column(String(50), default=State.RUNNING)
     run_id = Column(String(ID_LEN))
     external_trigger = Column(Boolean, default=True)
