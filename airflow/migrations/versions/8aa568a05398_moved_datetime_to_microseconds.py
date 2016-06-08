@@ -52,6 +52,24 @@ def upgrade():
                               existing_type=DateTime,
                               type_=DATETIME(fsp=6))
 
+    with op.batch_alter_table("dag_pickle") as batch_op:
+        batch_op.alter_column('created_dttm',
+                              existing_type=DateTime,
+                              type_=DATETIME(fsp=6))
+
+    with op.batch_alter_table("chart") as batch_op:
+        batch_op.alter_column('last_modified',
+                              existing_type=DateTime,
+                              type_=DATETIME(fsp=6))
+
+    with op.batch_alter_table("xcom") as batch_op:
+        batch_op.alter_column('timestamp',
+                              existing_type=DateTime,
+                              type_=DATETIME(fsp=6))
+        batch_op.alter_column('last_modified',
+                              existing_type=DateTime,
+                              type_=DATETIME(fsp=6))
+
 
 def downgrade():
     pass
