@@ -67,7 +67,7 @@ def upgrade():
         batch_op.alter_column('timestamp',
                               existing_type=DateTime,
                               type_=DATETIME(fsp=6))
-        batch_op.alter_column('last_modified',
+        batch_op.alter_column('execution_date',
                               existing_type=DateTime,
                               type_=DATETIME(fsp=6))
 
