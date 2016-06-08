@@ -34,7 +34,7 @@ def upgrade():
         batch_op.alter_column('execution_date',
                               existing_type=DateTime,
                               type_=DATETIME(fsp=6),
-                              existing_nullable=True)
+                              existing_nullable=False)
         batch_op.alter_column('start_date',
                               existing_type=DateTime,
                               type_=DATETIME(fsp=6))
