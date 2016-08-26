@@ -2399,6 +2399,8 @@ class DAG(LoggingMixin):
             concurrency=configuration.getint('core', 'dag_concurrency'),
             max_active_runs=configuration.getint(
                 'core', 'max_active_runs_per_dag'),
+            max_polled_runs=configuration.getint(
+                'scheduler', 'max_polled_runs'),
             dagrun_timeout=None,
             sla_miss_callback=None,
             params=None):
@@ -2411,6 +2413,10 @@ class DAG(LoggingMixin):
         if 'params' in self.default_args:
             self.params.update(self.default_args['params'])
             del self.default_args['params']
+
+        # Some logical limit on how many are polled
+        if not max_polled_runs:
+            max_polled_runs = 64
 
         validate_key(dag_id)
         self.task_dict = dict()
@@ -2435,6 +2441,7 @@ class DAG(LoggingMixin):
         self.max_active_runs = max_active_runs
         self.dagrun_timeout = dagrun_timeout
         self.sla_miss_callback = sla_miss_callback
+        self.max_polled_runs = max_polled_runs
 
         self._comps = {
             'dag_id',
@@ -2628,7 +2635,7 @@ class DAG(LoggingMixin):
                 DagRun.dag_id == self.dag_id,
                 DagRun.state == State.RUNNING)
             .order_by(DagRun.execution_date)
-            .all())
+            .limit(self.max_polled_runs))
 
         task_instances = (
             session

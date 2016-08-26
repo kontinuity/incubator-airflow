@@ -335,6 +335,12 @@ scheduler_heartbeat_sec = 5
 # use more threads than the amount of cpu cores available.
 max_threads = 2
 
+# CUSTOM: The default approach of scheduler is to poll for *all* pending
+# tasks. This creates an insane amount of load if the number of tasks
+# are large. This limits how many dags are polled for status.
+# General rule: 2 * celeryd_concurrency * number of workers
+max_polled_runs = 32
+
 [mesos]
 # Mesos master address which MesosExecutor will connect to.
 master = localhost:5050
