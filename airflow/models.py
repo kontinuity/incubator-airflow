@@ -2606,7 +2606,7 @@ class DAG(LoggingMixin):
                 DagRun.dag_id == self.dag_id,
                 DagRun.state == State.RUNNING)
             .order_by(DagRun.execution_date)
-            .all())
+            .limit(32))
 
         task_instances = (
             session
