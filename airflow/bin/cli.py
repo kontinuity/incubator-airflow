@@ -190,17 +190,15 @@ def run(args, dag=None):
 
     # Setting up logging
     log_base = os.path.expanduser(conf.get('core', 'BASE_LOG_FOLDER'))
+    log_format = settings.LOG_FORMAT
+    iso = args.execution_date.isoformat()
     if not conf.get('core', 'COMMON_LOG_FILENAME'):
         directory = log_base + "/{args.dag_id}/{args.task_id}".format(args=args)
         if not os.path.exists(directory):
             os.makedirs(directory)
-
-    iso = args.execution_date.isoformat()
-    filename = "{directory}/{iso}".format(**locals())
-    log_format = settings.LOG_FORMAT
-
-    common_log_filename = os.path.join(log_base, conf.get('core', 'COMMON_LOG_FILENAME'))
-    if common_log_filename:
+        filename = "{directory}/{iso}".format(**locals())
+    else:
+        common_log_filename = os.path.join(log_base, conf.get('core', 'COMMON_LOG_FILENAME'))
         prefix = '{}/{}'.format(args.dag_id, iso) if 'dag_id' in args else iso
         log_format = '{} - {}'.format(prefix, log_format)
         filename = common_log_filename
@@ -256,8 +254,8 @@ def run(args, dag=None):
                 session.commit()
                 pickle_id = pickle.id
                 print((
-                    'Pickled dag {dag} '
-                    'as pickle_id:{pickle_id}').format(**locals()))
+                      'Pickled dag {dag} '
+                      'as pickle_id:{pickle_id}').format(**locals()))
             except Exception as e:
                 print('Could not pickle the DAG')
                 print(e)
