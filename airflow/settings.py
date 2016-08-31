@@ -63,7 +63,7 @@ ___  ___ |  / _  /   _  __/ _  / / /_/ /_ |/ |/ /
 BASE_LOG_URL = '/admin/airflow/log'
 AIRFLOW_HOME = os.path.expanduser(conf.get('core', 'AIRFLOW_HOME'))
 SQL_ALCHEMY_CONN = conf.get('core', 'SQL_ALCHEMY_CONN')
-LOGGING_LEVEL = logging.INFO
+LOGGING_LEVEL = conf.get('core', 'DEFAULT_LOG_LEVEL')
 DAGS_FOLDER = os.path.expanduser(conf.get('core', 'DAGS_FOLDER'))
 
 engine_args = {}
@@ -111,6 +111,12 @@ def policy(task_instance):
 
 
 def configure_logging():
+    global LOGGING_LEVEL
+    if LOGGING_LEVEL:
+        LOGGING_LEVEL = logging.getLevelName(LOGGING_LEVEL)
+    else:
+        LOGGING_LEVEL = logging.INFO
+
     logging.root.handlers = []
     logging.basicConfig(
         format=LOG_FORMAT, stream=sys.stdout, level=LOGGING_LEVEL)
