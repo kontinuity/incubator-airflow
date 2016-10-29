@@ -2637,15 +2637,19 @@ class DAG(LoggingMixin):
             .order_by(DagRun.execution_date)
             .limit(self.max_polled_runs))
 
-        task_instances = (
-            session
-            .query(TI)
-            .filter(
-                TI.dag_id == self.dag_id,
-                TI.task_id.in_(self.active_task_ids),
-                TI.execution_date.in_(r.execution_date for r in active_runs)
-            )
-            .all())
+        execution_dates = [r.execution_date for r in active_runs]
+        if execution_dates:
+            task_instances = (
+                session
+                .query(TI)
+                .filter(
+                    TI.dag_id == self.dag_id,
+                    TI.task_id.in_(self.active_task_ids),
+                    TI.execution_date.in_(execution_dates)
+                )
+                .all())
+        else:
+            task_instances = []
 
         for ti in task_instances:
             ti.task = self.get_task(ti.task_id)
