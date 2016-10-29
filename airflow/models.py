@@ -1184,7 +1184,7 @@ class TaskInstance(Base):
                 msg = "Queuing attempt {attempt} of {total}".format(
                     attempt=self.try_number % (task.retries + 1) + 1,
                     total=task.retries + 1)
-                logging.info(HR + msg + HR)
+                logging.info(msg)
 
                 self.queued_dttm = datetime.now()
                 session.merge(self)
@@ -1193,7 +1193,7 @@ class TaskInstance(Base):
                 return
 
             # print status message
-            logging.info(HR + msg + HR)
+            logging.info(msg)
             self.try_number += 1
 
             if not test_mode:
