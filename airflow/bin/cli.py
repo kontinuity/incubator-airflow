@@ -477,8 +477,8 @@ def serve_logs(args):
             as_attachment=False)
     WORKER_LOG_SERVER_PORT = \
         int(conf.get('celery', 'WORKER_LOG_SERVER_PORT'))
-    flask_app.run(
-        host='0.0.0.0', port=WORKER_LOG_SERVER_PORT)
+    if WORKER_LOG_SERVER_PORT != 0:
+        flask_app.run(host='0.0.0.0', port=WORKER_LOG_SERVER_PORT)
 
 
 def worker(args):
