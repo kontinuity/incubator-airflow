@@ -199,15 +199,18 @@ def run(args, dag=None):
         filename = "{directory}/{iso}".format(**locals())
     else:
         common_log_filename = os.path.join(log_base, conf.get('core', 'COMMON_LOG_FILENAME'))
-        prefix = '{}/{}'.format(args.dag_id, iso) if 'dag_id' in args else iso
-        log_format = '{} - {}'.format(prefix, log_format)
+        prefix = args.dag_id if 'dag_id' in args else iso
+        log_format = '[{}] {}'.format(prefix, log_format)
         filename = common_log_filename
 
     logging.root.handlers = []
-    logging.basicConfig(
-        filename=filename,
-        level=settings.LOGGING_LEVEL,
-        format=log_format)
+    try:
+        logging.config.dictConfig(settings.LOGGING)
+    except:
+        logging.basicConfig(
+            filename=filename,
+            level=settings.LOGGING_LEVEL,
+            format=log_format)
 
     if not args.pickle and not dag:
         dag = get_dag(args)
